@@ -1,0 +1,48 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Generate timestamp tag
+      id: vars
+      run: echo "tag=$(date +%s)" >> "$GITHUB_OUTPUT"
+      
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          TAG: ${{ steps.vars.outputs.tag }}
+      run: |
+        mv "Bucstop WebApp" bucstop_webapp
+        docker build -f ./Team-3-BucStop_Tetris/Tetris/Dockerfile -t $DOCKER_USERNAME/tetris-bucstop:$TAG ./Team-3-BucStop_Tetris/Tetris
+        docker build -f ./Team-3-BucStop_Pong/Pong/Dockerfile -t $DOCKER_USERNAME/pong-bucstop:$TAG ./Team-3-BucStop_Pong/Pong
+        docker build -f ./Team-3-BucStop_APIGateway/APIGateway/Dockerfile -t $DOCKER_USERNAME/api-gateway-bucstop:$TAG ./Team-3-BucStop_APIGateway/APIGateway
+        docker build -f ./Team-3-BucStop_Snake/Snake/Dockerfile -t $DOCKER_USERNAME/snake-bucstop:$TAG ./Team-3-BucStop_Snake/Snake
+        docker build -f ./Bucstop-WebApp/BucStop/Dockerfile -t $DOCKER_USERNAME/bucstop-bucstop:$TAG ./Bucstop-WebApp/BucStop
+    
+    - name: Log into container registry
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    - name: push everything
+      env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          TAG: ${{ steps.vars.outputs.tag }}
+      run: |
+          docker push $DOCKER_USERNAME/tetris-bucstop:$TAG
+          docker push $DOCKER_USERNAME/pong-bucstop:$TAG
+          docker push $DOCKER_USERNAME/api-gateway-bucstop:$TAG
+          docker push $DOCKER_USERNAME/snake-bucstop:$TAG
+          docker push $DOCKER_USERNAME/bucstop-bucstop:$TAG
+
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
