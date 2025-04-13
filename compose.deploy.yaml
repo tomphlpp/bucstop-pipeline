@@ -1,0 +1,61 @@
+
+services:
+  bucstop:
+    container_name: bucstop
+    image: tomphlpps/bucstop-bucstop:current
+    ports:
+      - "8080:80"
+    networks:
+      - bucstop-network
+    environment:
+      - DOTNET_ENVIRONMENT=containers
+    depends_on:
+      - api-gateway
+
+  api-gateway:
+    container_name: api-gateway
+    image: tomphlpps/api-gateway-bucstop:current
+    ports:
+      - "8081:80" # Expose API Gateway on localhost:8081
+    networks:
+      - bucstop-network
+    environment:
+      - DOTNET_ENVIRONMENT=containers
+    depends_on:
+      - snake
+      - pong
+      - tetris
+
+  snake:
+    image: tomphlpps/snake-bucstop:current
+    container_name: game-snake
+    environment:
+      - DOTNET_ENVIRONMENT=containers
+    ports:
+      - "8082:80" # Expose Snake microservice on localhost:8082
+    networks:
+      - bucstop-network
+
+  pong:
+    image: tomphlpps/pong-bucstop:current
+    container_name: game-pong
+    environment:
+      - DOTNET_ENVIRONMENT=containers
+    ports:
+      - "8083:80" # Expose Pong microservice on localhost:8083
+    networks:
+      - bucstop-network
+
+  tetris:
+    image: tomphlpps/tetris-bucstop:current
+    container_name: game-tetris
+    environment:
+      - DOTNET_ENVIRONMENT=containers
+    ports:
+      - "8084:80" # Expose Tetris microservice on localhost:8084
+    networks:
+      - bucstop-network
+
+networks:
+  bucstop-network:
+    driver: bridge
