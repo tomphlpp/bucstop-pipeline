@@ -23,7 +23,6 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           TAG: ${{ steps.vars.outputs.tag }}
       run: |
-        mv "Bucstop WebApp" bucstop_webapp
         docker build -f ./Team-3-BucStop_Tetris/Tetris/Dockerfile -t $DOCKER_USERNAME/tetris-bucstop:$TAG ./Team-3-BucStop_Tetris/Tetris
         docker build -f ./Team-3-BucStop_Pong/Pong/Dockerfile -t $DOCKER_USERNAME/pong-bucstop:$TAG ./Team-3-BucStop_Pong/Pong
         docker build -f ./Team-3-BucStop_APIGateway/APIGateway/Dockerfile -t $DOCKER_USERNAME/api-gateway-bucstop:$TAG ./Team-3-BucStop_APIGateway/APIGateway
