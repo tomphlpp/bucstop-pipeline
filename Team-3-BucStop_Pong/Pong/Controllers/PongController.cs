@@ -23,6 +23,8 @@ namespace Pong
             _logger = logger;
             _config = config;
             gameURL = _config["MicroserviceUrls:Pong"];
+
+                _logger.LogInformation("PongController initialized with gameURL: {GameUrl}", gameURL);
         }
 
         private static readonly List<GameInfo> TheInfo = new List<GameInfo>

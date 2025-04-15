@@ -24,6 +24,8 @@ namespace Snake
             _logger = logger;
             _config = config;
             gameURL = _config["MicroserviceUrls:Snake"];
+
+                _logger.LogInformation("SnakeController initialized with gameURL: {GameUrl}", gameURL);
         }
 
 

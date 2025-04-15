@@ -24,6 +24,8 @@ namespace Tetris
             _logger = logger;
             _config = config;
             gameURL = _config["MicroserviceUrls:Tetris"];
+
+                _logger.LogInformation("tetrisController initialized with gameURL: {GameUrl}", gameURL);
         }
 
         private static readonly List<GameInfo> TheInfo = new List<GameInfo>
